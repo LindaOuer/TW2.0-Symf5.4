@@ -168,10 +168,11 @@ class ClassroomController extends AbstractController
     #[Route('/update/{id}', name: 'classroom_update')]
     public function update(Request $request, ManagerRegistry $doctrine, $id): Response
     {
-        $classroom = $doctrine->getRepository(Classroom::class)->find($id);
+        $idd = $request->get('id');
+        $classroom = $doctrine->getRepository(Classroom::class)->find($idd);
         $form = $this->createForm(ClassroomType::class, $classroom);
 
-
+    
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
@@ -182,11 +183,28 @@ class ClassroomController extends AbstractController
 
             $entityManager = $doctrine->getManager(); 
             
-            $entityManager->persist($classroom); // doctrine prepares the object but no query is executed
-
             $entityManager->flush(); // executes the query in this case UPDATE
 
             return new Response('classroom update'. $id);
+        }
+        
+        return $this->renderForm('classroom/add.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/update1/{id}', name: 'classroom_update1')]
+    public function update1(Request $request, ClassroomRepository $repo, Classroom $classroom): Response
+    {
+        $form = $this->createForm(ClassroomType::class, $classroom);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $classroom = $form->getData();
+            
+            $repo->add($classroom, true);
+
+            return new Response('classroom update');
         }
         
         return $this->renderForm('classroom/add.html.twig', [
