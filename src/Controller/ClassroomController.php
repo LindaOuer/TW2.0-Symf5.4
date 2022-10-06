@@ -164,4 +164,33 @@ class ClassroomController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/update/{id}', name: 'classroom_update')]
+    public function update(Request $request, ManagerRegistry $doctrine, $id): Response
+    {
+        $classroom = $doctrine->getRepository(Classroom::class)->find($id);
+        $form = $this->createForm(ClassroomType::class, $classroom);
+
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$classroom` variable has also been updated
+            $classroom = $form->getData();
+
+            // ... perform some action, such as saving the classroom to the database
+
+            $entityManager = $doctrine->getManager(); 
+            
+            $entityManager->persist($classroom); // doctrine prepares the object but no query is executed
+
+            $entityManager->flush(); // executes the query in this case UPDATE
+
+            return new Response('classroom update'. $id);
+        }
+        
+        return $this->renderForm('classroom/add.html.twig', [
+            'form' => $form,
+        ]);
+    }
 }
