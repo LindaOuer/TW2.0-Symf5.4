@@ -139,4 +139,29 @@ class ClassroomController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/add3', name: 'classroom_add3')]
+    public function add3(Request $request, ManagerRegistry $doctrine): Response
+    {
+        $classroom = new Classroom();
+        $form = $this->createForm(ClassroomType::class, $classroom);
+
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$classroom` variable has also been updated
+            $classroom = $form->getData();
+
+            // ... perform some action, such as saving the classroom to the database
+
+            $doctrine->getRepository(Classroom::class)->add($classroom, true);
+
+            return new Response('classroom success 3');
+        }
+        
+        return $this->renderForm('classroom/add.html.twig', [
+            'form' => $form,
+        ]);
+    }
 }
