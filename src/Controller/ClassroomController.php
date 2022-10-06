@@ -116,7 +116,7 @@ class ClassroomController extends AbstractController
     }
 
     #[Route('/add2', name: 'classroom_add2')]
-    public function add2(Request $request): Response
+    public function add2(Request $request, ClassroomRepository $repo): Response
     {
         $classroom = new Classroom();
         $form = $this->createForm(ClassroomType::class, $classroom);
@@ -130,11 +130,13 @@ class ClassroomController extends AbstractController
 
             // ... perform some action, such as saving the classroom to the database
 
+            $repo->add($classroom, true);
+
             return new Response('classroom success 2');
         }
         
-        return $this->render('classroom/add.html.twig', [
-            'form' => $form->createView(),
+        return $this->renderForm('classroom/add.html.twig', [
+            'form' => $form,
         ]);
     }
 }
