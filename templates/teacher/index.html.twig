@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TeacherController!{% endblock %}
+
+{% block body %}
+
+  <h1>Hello
+    {{ name }}! ✅
+  </h1>
+
+  {# exemple 1: set variable #}
+  {% set pi = 3.14 %}
+  {{ pi }}
+  <br>
+  {# exemple 2: set table#}
+  {% set tab = {
+
+    'fname': "Jane",
+    'lname': "Doe"
+
+  } %}
+  {{ tab['fname'] }}
+  {# exemple 3: for #}
+  {% set persons = {
+    1: {
+      'fname': "Jane",
+      'lname': "Doe"
+    },
+    2: {
+      'fname': "John",
+      'lname': "Doe"
+    }
+  } %}
+  <ul>
+    {% for p in persons %}
+      <li>
+        {{p.fname}}
+      </li>
+
+    {% endfor %}
+  </ul>
+
+  {# exemple 4: if + filter#}
+  {% if persons is empty %}
+    <p>
+      No one there
+    </p>
+  {% else %}
+    <p>
+      There is
+      {{ persons| length }}
+      persons
+    </p>
+  {% endif %}
+  {# exemple 5: filter#}
+  {{ "This is a random text"|trim | upper }}
+  <br>
+  {% apply lower %}
+  A TEXT WRITTEN IN UPPERCASE
+  {% endapply %}
+
+{% endblock %}

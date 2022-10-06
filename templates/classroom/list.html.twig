@@ -1,0 +1,7 @@
+<ul>
+  {% for c in classrooms %}
+    <li>{{ c.name }} - <a href="{{ path('classroom_detail', {id: c.id}) }}">Detail</a>
+    </li>
+    {# path('classroom_detail', {id: c.id}) #}
+  {% endfor %}
+</ul>

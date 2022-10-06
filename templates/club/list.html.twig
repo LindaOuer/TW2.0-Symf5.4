@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+        <style>
+            h1{
+                text-align: center;
+            }
+            img {
+                width: 50%;
+                margin-left: 25%;
+            }
+            .container {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+            .item {
+                width: 20%;
+                border: 1px solid black;
+                margin-top: 5px;
+                padding: 2px 10px;
+            }
+        </style>
+	</head>
+	<body>
+		<h1>Clubs List</h1>
+		<img src="{{ asset('logo-esprit.png') }}" alt="">
+
+		<div class="container">
+			{% for club in clubs %}
+				<div class="item">
+					<h3>{{ club.name|lower }}</h3>
+					<p>
+						Inscription Date: {{ club.inscriptionDate }}
+					</p>
+					<p>
+						Remaining Spots: {{ club.openSpots }}
+					</p>
+				</div>
+			{% endfor %}
+		</div>
+        <hr>
+        <div class="container">
+			{% for club in clubs %}
+			{% if club.openSpots > 0 %}
+				<div class="item">
+					<h3>{{ club.name }}</h3>
+					<p>
+						Inscription Date: {{ club.inscriptionDate }}
+					</p>
+					<p>
+						Remaining Spots: {{ club.openSpots }}
+					</p>
+				</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+
+		
+
+	</body>
+</html>
