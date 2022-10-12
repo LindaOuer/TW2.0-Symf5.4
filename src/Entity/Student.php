@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StudentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
@@ -19,6 +21,14 @@ class Student
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
+
+    #[ORM\ManyToMany(targetEntity: Club::class, inversedBy: 'students')]
+    private Collection $clubs;
+
+    public function __construct()
+    {
+        $this->clubs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -45,6 +55,30 @@ class Student
     public function setCard(StudentCard $card): self
     {
         $this->card = $card;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Club>
+     */
+    public function getClubs(): Collection
+    {
+        return $this->clubs;
+    }
+
+    public function addClub(Club $club): self
+    {
+        if (!$this->clubs->contains($club)) {
+            $this->clubs->add($club);
+        }
+
+        return $this;
+    }
+
+    public function removeClub(Club $club): self
+    {
+        $this->clubs->removeElement($club);
 
         return $this;
     }
