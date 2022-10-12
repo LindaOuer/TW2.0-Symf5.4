@@ -66,7 +66,7 @@ class ClassroomController extends AbstractController
     }
 
     #[Route('/show3/{id}', name: 'classroom_detail3')]
-    public function show3(Classroom $classroom=null): Response
+    public function show3(Classroom $classroom = null): Response
     {
         return $this->render('classroom/show.html.twig', [
             'classroom' => $classroom,
@@ -74,12 +74,19 @@ class ClassroomController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'classroom_delete')]
-    public function delete(Classroom $classroom=null, ManagerRegistry $doctrine): Response
+    public function delete(Classroom $classroom = null, ManagerRegistry $doctrine): Response
     {
         $entityManager = $doctrine->getManager();
         $entityManager->remove($classroom);
         $entityManager->flush();
 
+        return new Response("Deleted");
+    }
+
+    #[Route('/delete1/{id}', name: 'classroom_delete1')]
+    public function delete1(Classroom $classroom = null, ClassroomRepository $repo): Response
+    {
+        $repo->remove($classroom, true);
         return new Response("Deleted");
     }
 
@@ -98,18 +105,18 @@ class ClassroomController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$classroom` variable has also been updated
-            $classroom = $form->getData();
+            // $classroom = $form->getData();
 
             // ... perform some action, such as saving the classroom to the database
             $entityManager = $doctrine->getManager(); //gets Doctrine's entity manager object - its responsible for saving objects to and fetching objects from the DB
-            
+
             $entityManager->persist($classroom); // doctrine prepares the object but no query is executed
 
             $entityManager->flush(); // executes the query in this case INSERT
 
             return new Response('classroom success');
         }
-        
+
         return $this->render('classroom/add.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -126,7 +133,7 @@ class ClassroomController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$classroom` variable has also been updated
-            $classroom = $form->getData();
+            // $classroom = $form->getData();
 
             // ... perform some action, such as saving the classroom to the database
 
@@ -134,7 +141,7 @@ class ClassroomController extends AbstractController
 
             return new Response('classroom success 2');
         }
-        
+
         return $this->renderForm('classroom/add.html.twig', [
             'form' => $form,
         ]);
@@ -151,7 +158,7 @@ class ClassroomController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$classroom` variable has also been updated
-            $classroom = $form->getData();
+            // $classroom = $form->getData();
 
             // ... perform some action, such as saving the classroom to the database
 
@@ -159,7 +166,7 @@ class ClassroomController extends AbstractController
 
             return new Response('classroom success 3');
         }
-        
+
         return $this->renderForm('classroom/add.html.twig', [
             'form' => $form,
         ]);
@@ -172,22 +179,22 @@ class ClassroomController extends AbstractController
         $classroom = $doctrine->getRepository(Classroom::class)->find($idd);
         $form = $this->createForm(ClassroomType::class, $classroom);
 
-    
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$classroom` variable has also been updated
-            $classroom = $form->getData();
+            // $classroom = $form->getData();
 
             // ... perform some action, such as saving the classroom to the database
 
-            $entityManager = $doctrine->getManager(); 
-            
+            $entityManager = $doctrine->getManager();
+
             $entityManager->flush(); // executes the query in this case UPDATE
 
-            return new Response('classroom update'. $id);
+            return new Response('classroom update' . $id);
         }
-        
+
         return $this->renderForm('classroom/add.html.twig', [
             'form' => $form,
         ]);
@@ -200,13 +207,13 @@ class ClassroomController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $classroom = $form->getData();
-            
+            // $classroom = $form->getData();
+
             $repo->add($classroom, true);
 
             return new Response('classroom update');
         }
-        
+
         return $this->renderForm('classroom/add.html.twig', [
             'form' => $form,
         ]);
