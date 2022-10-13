@@ -6,14 +6,12 @@ use App\Repository\StudentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
 class Student
 {
-    #[ORM\OneToOne(inversedBy: 'student', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?StudentCard $card = null;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,7 +20,15 @@ class Student
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\ManyToMany(targetEntity: Club::class, inversedBy: 'students')]
+    #[ORM\ManyToMany(
+        targetEntity: Club::class,
+        inversedBy: 'students',
+        cascade: ["persist", "remove", "merge"],
+        orphanRemoval: true
+    )]
+    #[ORM\JoinTable(name: "student_club")]
+    #[ORM\JoinColumn(name: "club_id", referencedColumnName: "id")]
+    #[ORM\InverseJoinColumn(name: "student_id", referencedColumnName: "id")]
     private Collection $clubs;
 
     public function __construct()
@@ -43,18 +49,6 @@ class Student
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getCard(): ?StudentCard
-    {
-        return $this->card;
-    }
-
-    public function setCard(StudentCard $card): self
-    {
-        $this->card = $card;
 
         return $this;
     }
