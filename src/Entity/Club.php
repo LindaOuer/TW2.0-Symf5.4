@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ClassroomRepository;
+use App\Repository\ClubRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ClassroomRepository::class)]
-class Classroom
+#[ORM\Entity(repositoryClass: ClubRepository::class)]
+class Club
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,16 +18,12 @@ class Classroom
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'Classroom', targetEntity: Student::class)]
+    #[ORM\ManyToMany(targetEntity: Student::class, mappedBy: 'clubs')]
     private Collection $students;
-
-    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classrooms')]
-    private Collection $teachers;
 
     public function __construct()
     {
         $this->students = new ArrayCollection();
-        $this->teachers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -59,7 +55,7 @@ class Classroom
     {
         if (!$this->students->contains($student)) {
             $this->students->add($student);
-            $student->setClassroom($this);
+            $student->addClub($this);
         }
 
         return $this;
@@ -68,37 +64,7 @@ class Classroom
     public function removeStudent(Student $student): self
     {
         if ($this->students->removeElement($student)) {
-            // set the owning side to null (unless already changed)
-            if ($student->getClassroom() === $this) {
-                $student->setClassroom(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Teacher>
-     */
-    public function getTeachers(): Collection
-    {
-        return $this->teachers;
-    }
-
-    public function addTeacher(Teacher $teacher): self
-    {
-        if (!$this->teachers->contains($teacher)) {
-            $this->teachers->add($teacher);
-            $teacher->addClassroom($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTeacher(Teacher $teacher): self
-    {
-        if ($this->teachers->removeElement($teacher)) {
-            $teacher->removeClassroom($this);
+            $student->removeClub($this);
         }
 
         return $this;
