@@ -23,7 +23,7 @@ class Student
 
     #[ORM\ManyToOne(inversedBy: 'students')]
     private ?Classroom $Classroom = null;
-    
+
     #[ORM\ManyToMany(
         targetEntity: Club::class,
         inversedBy: 'students',
